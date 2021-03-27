@@ -1,0 +1,39 @@
+Description: Cria cluster redshift
+Resources:
+
+RedshiftCanuto:
+Type: AWS::Redshift::Cluster
+Properties: 
+  ClusterIdentifier: CanutoRedshift
+  DBName: dev
+  AllowVersionUpgrade: True
+  AutomatedSnapshotRetentionPeriod: 5
+  AvailabilityZone: us-east-1
+  ClusterParameterGroupName: String
+  ClusterSecurityGroups: 
+    - String
+  ClusterSubnetGroupName: String
+  ClusterType: multi-node
+  ElasticIp: String
+  Encrypted: Boolean
+  HsmClientCertificateIdentifier: String
+  HsmConfigurationIdentifier: String
+  IamRoles: 
+    - String
+  KmsKeyId: String
+  LoggingProperties: 
+    LoggingProperties
+  MasterUsername: String
+  MasterUserPassword: String
+  NodeType: String
+  NumberOfNodes: Integer
+  OwnerAccount: String
+  Port: Integer
+  PreferredMaintenanceWindow: String
+  PubliclyAccessible: Boolean
+  SnapshotClusterIdentifier: String
+  SnapshotIdentifier: String
+  Tags: 
+    - Tag
+  VpcSecurityGroupIds: 
+    - String
