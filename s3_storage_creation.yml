@@ -10,3 +10,7 @@ BucketCanuto:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
+
+
+
+## teste
