@@ -1,39 +1,95 @@
 Description: Cria cluster redshift
 Resources:
 
-RedshiftCanuto:
-Type: AWS::Redshift::Cluster
-Properties: 
-  ClusterIdentifier: CanutoRedshift
-  DBName: dev
-  AllowVersionUpgrade: True
-  AutomatedSnapshotRetentionPeriod: 5
-  AvailabilityZone: us-east-1
-  ClusterParameterGroupName: String
-  ClusterSecurityGroups: 
-    - String
-  ClusterSubnetGroupName: String
-  ClusterType: multi-node
-  ElasticIp: String
-  Encrypted: Boolean
-  HsmClientCertificateIdentifier: String
-  HsmConfigurationIdentifier: String
-  IamRoles: 
-    - String
-  KmsKeyId: String
-  LoggingProperties: 
-    LoggingProperties
-  MasterUsername: String
-  MasterUserPassword: String
-  NodeType: String
-  NumberOfNodes: Integer
-  OwnerAccount: String
-  Port: Integer
-  PreferredMaintenanceWindow: String
-  PubliclyAccessible: Boolean
-  SnapshotClusterIdentifier: String
-  SnapshotIdentifier: String
-  Tags: 
-    - Tag
-  VpcSecurityGroupIds: 
-    - String
+  RedshiftCanuto:
+    Type: AWS::Redshift::Cluster
+    Properties: 
+      ClusterIdentifier: CanutoRedshift
+      DBName: production
+      AllowVersionUpgrade: True
+      AutomatedSnapshotRetentionPeriod: 5
+      AvailabilityZone: us-east-1
+      ClusterParameterGroupName: !Ref ClusterParameterGroup
+      ClusterSubnetGroupName: !Ref ClusterSubnetGroupName
+      ClusterType: multi-node
+      Encrypted: True
+      MasterUsername: admin
+      MasterUserPassword: Admin1234
+      NodeType: dc2.large
+      NumberOfNodes: 2
+      PubliclyAccessible: True
+      VpcSecurityGroupIds: 
+        - !Ref RedshiftSecourityGroup
+
+  ClusterParameterGroup:
+    Type: AWS::Redshift::ClusterParameterGroup
+    Properties: 
+      Description: Parameter group for Redshift cluster
+      ParameterGroupFamily: redshift-1.0
+      Parameters:       # valido entender melhor futuramente
+        - ParameterName: max_concurrency_scaling_clusters
+          ParameterValue: 0   # valor para scale de cpu's para o cluster
+
+  ClusterSubnetGroup:
+    Type: AWS::Redshift::ClusterSubnetGroup
+    Properties: 
+      Description: Subnet group for Redshift cluster
+      SubnetIds: 
+        - !Ref RedshiftSubnet
+
+  RedshiftSubnet:
+    Type: AWS::EC2::Subnet
+    Properties: 
+      AvailabilityZone: us-east-1
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref RedshiftVPC
+
+  RedshiftVPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: 10.0.0.0/16
+
+  RedshiftSecourityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      GroupDescription: Security Group for Redshift cluster
+      GroupName: redshift-security-group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5439
+          ToPort: 5439
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 5439
+          ToPort: 5439
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref RedshiftVPC
+
+  RedshiftVPCInternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  RedshiftVPCGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref RedshiftVPCInternetGateway
+      VpcId: !Ref RedshiftVPC
+  
+  RedshiftRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VPCId: !Ref RedshiftVPC
+
+  RedshiftVPCRoute:
+    Type: AWS::EC2::Route
+    Properties: 
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref RedshiftVPCInternetGateway
+      RouteTableId: !Ref RedshiftRouteTable
+
+
+  RedshiftSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties: 
+      RouteTableId: !Ref RedshiftRouteTable
+      SubnetId: !Ref RedshiftSubnet
