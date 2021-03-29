@@ -16,3 +16,6 @@ def put_record(event):
 
 simulation = Simulation(user_pool_size=100, sessions_per_day=10000)
 events = simulation.run(duration_seconds=300)
+
+for event in events:
+    put_record(event)
