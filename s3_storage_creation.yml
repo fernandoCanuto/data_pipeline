@@ -4,7 +4,7 @@ Resources:
   BucketCanuto:
     Type: AWS::S3::Bucket
     Properties: 
-      BucketName: bucket-fcanuto
+      BucketName: buckets3-fcanuto
       BucketEncryption: 
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:

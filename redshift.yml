@@ -8,9 +8,9 @@ Resources:
       DBName: production
       AllowVersionUpgrade: True
       AutomatedSnapshotRetentionPeriod: 5
-      AvailabilityZone: us-east-1
-      ClusterParameterGroupName: !Ref ClusterParameterGroup
-      ClusterSubnetGroupName: !Ref ClusterSubnetGroupName
+      AvailabilityZone: us-east-1a
+      ClusterParameterGroupName: !Ref RedshiftParameterGroup
+      ClusterSubnetGroupName: !Ref RedshiftSubnetGroup
       ClusterType: multi-node
       Encrypted: True
       MasterUsername: admin
@@ -21,7 +21,7 @@ Resources:
       VpcSecurityGroupIds: 
         - !Ref RedshiftSecourityGroup
 
-  ClusterParameterGroup:
+  RedshiftParameterGroup:
     Type: AWS::Redshift::ClusterParameterGroup
     Properties: 
       Description: Parameter group for Redshift cluster
@@ -30,7 +30,7 @@ Resources:
         - ParameterName: max_concurrency_scaling_clusters
           ParameterValue: 0   # valor para scale de cpu's para o cluster
 
-  ClusterSubnetGroup:
+  RedshiftSubnetGroup:
     Type: AWS::Redshift::ClusterSubnetGroup
     Properties: 
       Description: Subnet group for Redshift cluster
@@ -40,7 +40,7 @@ Resources:
   RedshiftSubnet:
     Type: AWS::EC2::Subnet
     Properties: 
-      AvailabilityZone: us-east-1
+      AvailabilityZone: us-east-1a
       CidrBlock: 10.0.0.0/24
       VpcId: !Ref RedshiftVPC
 
@@ -58,7 +58,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 5439
           ToPort: 5439
-          CidrIp: 0.0.0.0/0
+          CidrIp: 192.168.15.136/32
       SecurityGroupEgress:
         - IpProtocol: tcp
           FromPort: 5439
@@ -78,7 +78,7 @@ Resources:
   RedshiftRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VPCId: !Ref RedshiftVPC
+      VpcId: !Ref RedshiftVPC
 
   RedshiftVPCRoute:
     Type: AWS::EC2::Route
