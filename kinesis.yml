@@ -60,4 +60,4 @@ Resources:
               - s3:PutObject
             Resource:
               - !GetAtt KinesisFirehoseBucket.Arn
-              - !Join ["/", [!GetAtt KinesisFirehoseBucket.Arn, ""]]
+              - !Join ["/", [!GetAtt KinesisFirehoseBucket.Arn, "*"]]

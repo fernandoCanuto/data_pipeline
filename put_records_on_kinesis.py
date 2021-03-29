@@ -13,7 +13,6 @@ def put_record(event):
     print(event)
     return response
 
-
 simulation = Simulation(user_pool_size=100, sessions_per_day=10000)
 events = simulation.run(duration_seconds=300)
 
