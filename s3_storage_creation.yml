@@ -1,0 +1,16 @@
+Description: Cria bucket S3
+Resources:
+
+  BucketCanuto:
+    Type: AWS::S3::Bucket
+    Properties: 
+      BucketName: buckets3-fcanuto
+      BucketEncryption: 
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+          BlockPublicAcls: True
+          BlockPublicPolicy: True
+          IgnorePublicAcls: True
+          RestrictPublicBuckets: True
